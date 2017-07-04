@@ -225,6 +225,8 @@ inline void _da_erase(void **array, size_t element_size, uint32_t pos) {
 
 /* 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+MIT License
+
 Copyright (c) 2017 Ryan Fleury
 
 Permission is hereby granted, free of charge, to any person 
