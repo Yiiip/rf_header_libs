@@ -9,7 +9,6 @@ SINGLE-HEADER C/++ DYNAMIC ARRAY LIBRARY
 	it allocates memory as it needs to. This was originally a
 	learning exercise inspired by Sean Barrett's stretchy buffer 
 	library which is effectively the same thing.
-
 	---USAGE---
 	
 	There are 8 notable functions/macros for usual usage: da_size, 
@@ -98,6 +97,7 @@ SINGLE-HEADER C/++ DYNAMIC ARRAY LIBRARY
 #include <stdlib.h>
 #include <stdint.h>
 #include <memory.h>
+#include <string.h>
 
 #define _DARRAY_START_CAP 32
 
@@ -226,9 +226,7 @@ inline void _da_erase(void **array, size_t element_size, uint32_t pos) {
 /* 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 MIT License
-
 Copyright (c) 2017 Ryan Fleury
-
 Permission is hereby granted, free of charge, to any person 
 obtaining a copy of this software and associated documentation 
 files (the "Software"), to deal in the Software without 
@@ -236,10 +234,8 @@ restriction, including without limitation the rights to use, copy,
 modify, merge, publish, distribute, sublicense, and/or sell copies 
 of the Software, and to permit persons to whom the Software is 
 furnished to do so, subject to the following conditions:
-
 The above copyright notice and this permission notice shall be 
 included in all copies or substantial portions of the Software.
-
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
 OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
