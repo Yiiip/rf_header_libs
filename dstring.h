@@ -131,7 +131,7 @@ typedef char *dstring;
 #define ds_size(a)                      (a ? ds_raw(a)[0] : 0)
 #define ds_cap(a)                       (a ? ds_raw(a)[1] : 0)
 
-#define ds_length(a)                    (ds_size(a) - 1)
+#define ds_length(a)                    (ds_size(a) > 0 ? ds_size(a) - 1 : 0)
 #define ds_len(a)                       ds_length(a)
 
 #define ds_add_s(a, s)                  { a = _ds_insert_s(a, s, ds_length(a)); }
@@ -210,7 +210,7 @@ inline char *_ds_erase(char *str, uint32_t i) {
     memmove(str + i, str + i + 1, ds_size(str) - i - 1);
     (ds_raw(str))[0]--;
 
-    if((ds_raw(str))[0] < 1) {
+    if((ds_raw(str))[0] < 2) {
         ds_free(str);
     }
 
