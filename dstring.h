@@ -1,3 +1,119 @@
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+       SINGLE-HEADER C/++ C-STRING HELPER LIBRARY
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    DESCRIPTION
+
+        This library provides some nice functions
+        that make C-strings much easier to work
+        with. It has functionality for appending
+        multiple types (other strings, chars,
+        ints, and floating point types), inserting
+        said types, and erasing. It stretches and
+        reallocates memory as necessary. It is
+        implemented very much in the same way as
+        the darray lib (and by extension the
+        stretchy buffer library by Sean Barrett),
+        and is effectively a special case of that.
+
+        Its only dependency is the CRT. Strings
+        produced by the library's functionality
+        can be used as C-strings as they are
+        null terminated.
+
+    USAGE
+
+        There are a few notable functions for usual
+        usage:
+
+        * ds_size     returns number of chars including
+                      null terminator
+
+        * ds_cap      returns number of chars allowed
+                      with current allocation. if this
+                      is exceeded, reallocation will
+                      be necessary.
+
+        * ds_length   returns number of chars without
+                      null terminator
+
+        * ds_new      creates a new string- flags can be
+                      passed and will be inserted into
+                      the string. this uses sprintf so
+                      flag functionality will match that.
+
+        * ds_add_s    appends a string to a given string
+         (aka ds_add_string)
+
+        * ds_add_c    appends a char to a given string
+         (aka ds_add_char)
+
+        * ds_add_i    appends an int to a given string
+         (aka ds_add_int)
+
+        * ds_add_f    appends a floating point value to
+                      a given string
+         (aka ds_add_float)
+
+        * ds_insert_s inserts a string to a given string
+                      at a given position
+         (aka ds_insert_string)
+
+        * ds_insert_c inserts a char to a given string
+                      at a given position
+         (aka ds_insert_char)
+
+        * ds_insert_i inserts an int to a given string
+                      at a given position
+         (aka ds_insert_int)
+
+        * ds_insert_f inserts a floating point value to
+                      a given string at a given position
+         (aka ds_insert_float)
+
+        * ds_free     frees all memory associated with
+                      a string.
+
+        To declare a string ready to use with these
+        functions, simply create a char * and point it
+        to NULL (You can also use the dstring typedef
+        if you please). Remember to call ds_free before
+        the pointer goes out of scope if you don't want
+        the memory to be allocated for the lifetime of
+        the program.
+
+    EXAMPLE
+
+        dstring str = NULL;
+        str = ds_new("This is a number: %i", 123);
+        ds_add_string(str, "\nHere's another number: ");
+        ds_add_int(str, 321);
+        ds_insert_float(str, 123.45, 12);
+        ds_free(str);
+
+    WARNING
+
+        Memory might be reallocated. Therefore, don't
+        expect a pointer to a character to remain
+        constant.
+
+        Also, do not try to insert something at a
+        position greater than the length of the
+        string. Consider:
+
+        dstring test = ds_new("Hello");
+        ds_insert_s(test, "This will crash maybe", 1000);
+        //the string we're trying to append states
+        //information that is probably correct
+
+        dstring test = ds_new("Hello");
+        ds_insert_s(test, "This won't crash I bet", 5);
+        //this is safe
+
+    LICENSE INFORMATION IS AT THE END OF THE FILE
+*/
+
 #ifndef _DSTRING_H
 #define _DSTRING_H
 
@@ -38,7 +154,7 @@ typedef char *dstring;
 #define ds_insert_int(a, i, pos)        ds_insert_i(a, i, pos)
 #define ds_insert_float(a, f, pos)      ds_insert_f(a, f, pos)
 
-#define ds_free(a)                      { if(a) free(ds_raw(a)); }
+#define ds_free(a)                      { if(a) { free(ds_raw(a)); a = NULL; } }
 
 inline char *_ds_grow(char *dstr, uint32_t required_chars) {
     if(ds_cap(dstr) < required_chars) {
@@ -101,3 +217,31 @@ inline char *ds_erase(char *str, uint32_t i) {
 
 #endif
 
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+MIT License
+Copyright (c) 2017 Ryan Fleury
+
+Permission is hereby granted, free of charge, to any
+person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the
+Software without restriction, including without
+limitation the rights to use, copy, modify, merge,
+publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software
+is furnished to do so, subject to the following
+conditions: The above copyright notice and this permission
+notice shall be included in all copies or substantial
+portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
+ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
