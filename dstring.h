@@ -154,6 +154,8 @@ typedef char *dstring;
 #define ds_insert_int(a, i, pos)        ds_insert_i(a, i, pos)
 #define ds_insert_float(a, f, pos)      ds_insert_f(a, f, pos)
 
+#define ds_erase(a, pos)                { a = _ds_erase(a, pos); }
+
 #define ds_free(a)                      { if(a) { free(ds_raw(a)); a = NULL; } }
 
 inline char *_ds_grow(char *dstr, uint32_t required_chars) {
@@ -204,7 +206,7 @@ inline char *_ds_insert_s(char *str, const char *add, uint32_t pos) {
     return str;
 }
 
-inline char *ds_erase(char *str, uint32_t i) {
+inline char *_ds_erase(char *str, uint32_t i) {
     memmove(str + i, str + i + 1, ds_size(str) - i - 1);
     (ds_raw(str))[0]--;
 
