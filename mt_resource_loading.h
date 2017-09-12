@@ -1,31 +1,41 @@
+Skip to content
+This repository
+Search
+Pull requests
+Issues
+Marketplace
+Explore
+ @d3l1x
+ Sign out
+ Unwatch 1
+  Star 0
+  Fork 0 d3l1x/dx_header_libs
+ Code  Issues 0  Pull requests 0  Projects 0  Wiki  Settings Insights 
+Branch: master Find file Copy pathdx_header_libs/mt_resource_loading.h
+467e737  2 days ago
+@d3l1x d3l1x Initial version/first upload
+1 contributor
+RawBlameHistory     
+309 lines (245 sloc)  9.15 KB
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    SINGLE-HEADER C/++ MULTI-THREADED RESOURCE LIBRARY
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
     DESCRIPTION
-
         This library provides the bare-bones basics
         for multi-threaded resource management. Using
         indices and filenames corresponding with those
         indices, the functions in this file will
         launch threads as necessary in order to load
         raw data, if found, at said filenames.
-
         This raw data can then be retrieved and used
         however you want.
-
         Its only dependencies are the CRT/pthread.
-
     USAGE
-
         There are a few notable functions for usual
         usage:
-
         --------------------------------------------
-
         * mtr_new
-
               returns a newly allocated 'Resource
               Master'. Takes the number of resources
               you want and an array of C-strings
@@ -33,93 +43,68 @@
               filenames of these resources. Should
               be called before any other mtr_
               prefixed function.
-
         * mtr_clean_up
-
               cleans up an mtr_ResourceMaster. Frees
               all associated memory and resources.
-
         * mtr_update
-
               checks for new resource requests.
               This should happen frequently; if
               you're using this in a game, call this
               every frame.
-
         * mtr_request_resource
-
               requests the loading thread to start
               in order to load a given resource.
-
         * mtr_grab_resource_data
-
               takes any loaded data associated with
               a resource and returns it (via passed
               pointers). Returns 1 if successful,
               0 otherwise.
-
         --------------------------------------------
-
         In order to start using this, you should
         create/initialize (via mtr_new) an
         mtr_ResourceMaster. Be sure to call
         mtr_update frequently, and call
         mtr_request_resource as you please.
-
         When the resource is finished loading,
         mtr_grab_resource_data will be successful
         and you can use your loaded data.
-
         Be sure to call mtr_clean_up if/when you
         want any mtr-allocated memory freed.
-
     EXAMPLE
-
         enum {
             RS_FILE_1,
             RS_FILE_2,
             RS_FILE_3,
             RS_FILE_4,
-
             MAX_RS
         };
-
         const char *resource_filenames[MAX_RS] = {
             "file1.txt",
             "file2.gif",
             "file3.mp4",
             "file4.mp3",
         };
-
         mtr_ResourceMaster *rs_master = mtr_new(
             MAX_RS,
             resource_filenames
         );
-
         mtr_request_resource(rs_master, RS_FILE_1);
-
         while(true) {
             mtr_update(rs_master);
             printf("I'm updating while stuff is being loaded!\n");
-
             int64_t data_len = 0;
             void *data = NULL;
             if(mtr_grab_resource_data(rs_master, RS_FILE_1, &data, &data_len)) {
                 printf("The file is finished loading! Here are the contents!\n\n");
-
                 for(int64_t i = 0; i < data_len; i++) {
                     printf("%c", ((char *)data)[i]);
                 }
-
                 free(data);
                 break;
             }
         }
-
         mtr_clean_up(rs_master);
-
     WARNING
-
         You're in charge of how the data loaded
         is interpreted. If you're not careful,
         you'll have some nasty crashes. This
@@ -132,7 +117,6 @@
         this stuff, but that is not the point
         of this library; that would make it
         less general!
-
     LICENSE INFORMATION IS AT THE END OF THE FILE
 */
 
@@ -144,14 +128,14 @@
 #include <stdint.h>
 #include <pthread.h>
 
-typedef struct {
+typedef struct mtr_Resource {
     int8_t need_load;
     const char *filename;
     int64_t data_len;
     void *data;
 } mtr_Resource;
 
-typedef struct {
+typedef struct mtr_ResourceMaster {
     int8_t need_load,
            is_loading,
            need_finish;
@@ -282,7 +266,6 @@ inline int8_t mtr_grab_resource_data(mtr_ResourceMaster *r, uint16_t index, void
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 MIT License
 Copyright (c) 2017 Ryan Fleury
-
 Permission is hereby granted, free of charge, to any
 person obtaining a copy of this software and associated
 documentation files (the "Software"), to deal in the
@@ -294,7 +277,6 @@ is furnished to do so, subject to the following
 conditions: The above copyright notice and this permission
 notice shall be included in all copies or substantial
 portions of the Software.
-
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
 ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
 TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
