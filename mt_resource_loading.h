@@ -1,26 +1,8 @@
-Skip to content
-This repository
-Search
-Pull requests
-Issues
-Marketplace
-Explore
- @d3l1x
- Sign out
- Unwatch 1
-  Star 0
-  Fork 0 d3l1x/dx_header_libs
- Code  Issues 0  Pull requests 0  Projects 0  Wiki  Settings Insights 
-Branch: master Find file Copy pathdx_header_libs/mt_resource_loading.h
-467e737  2 days ago
-@d3l1x d3l1x Initial version/first upload
-1 contributor
-RawBlameHistory     
-309 lines (245 sloc)  9.15 KB
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    SINGLE-HEADER C/++ MULTI-THREADED RESOURCE LIBRARY
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     DESCRIPTION
         This library provides the bare-bones basics
         for multi-threaded resource management. Using
@@ -31,10 +13,13 @@ RawBlameHistory
         This raw data can then be retrieved and used
         however you want.
         Its only dependencies are the CRT/pthread.
+		
     USAGE
         There are a few notable functions for usual
         usage:
+		
         --------------------------------------------
+		
         * mtr_new
               returns a newly allocated 'Resource
               Master'. Takes the number of resources
@@ -59,7 +44,9 @@ RawBlameHistory
               a resource and returns it (via passed
               pointers). Returns 1 if successful,
               0 otherwise.
+			  
         --------------------------------------------
+		
         In order to start using this, you should
         create/initialize (via mtr_new) an
         mtr_ResourceMaster. Be sure to call
@@ -70,6 +57,7 @@ RawBlameHistory
         and you can use your loaded data.
         Be sure to call mtr_clean_up if/when you
         want any mtr-allocated memory freed.
+		
     EXAMPLE
         enum {
             RS_FILE_1,
@@ -104,6 +92,7 @@ RawBlameHistory
             }
         }
         mtr_clean_up(rs_master);
+		
     WARNING
         You're in charge of how the data loaded
         is interpreted. If you're not careful,
@@ -117,6 +106,7 @@ RawBlameHistory
         this stuff, but that is not the point
         of this library; that would make it
         less general!
+		
     LICENSE INFORMATION IS AT THE END OF THE FILE
 */
 
@@ -265,7 +255,9 @@ inline int8_t mtr_grab_resource_data(mtr_ResourceMaster *r, uint16_t index, void
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 MIT License
+
 Copyright (c) 2017 Ryan Fleury
+
 Permission is hereby granted, free of charge, to any
 person obtaining a copy of this software and associated
 documentation files (the "Software"), to deal in the
@@ -277,6 +269,7 @@ is furnished to do so, subject to the following
 conditions: The above copyright notice and this permission
 notice shall be included in all copies or substantial
 portions of the Software.
+
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
 ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
 TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
@@ -286,5 +279,6 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
