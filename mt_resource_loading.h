@@ -13,13 +13,13 @@
         This raw data can then be retrieved and used
         however you want.
         Its only dependencies are the CRT/pthread.
-		
+
     USAGE
         There are a few notable functions for usual
         usage:
-		
+
         --------------------------------------------
-		
+
         * mtr_new
               returns a newly allocated 'Resource
               Master'. Takes the number of resources
@@ -44,9 +44,9 @@
               a resource and returns it (via passed
               pointers). Returns 1 if successful,
               0 otherwise.
-			  
+
         --------------------------------------------
-		
+
         In order to start using this, you should
         create/initialize (via mtr_new) an
         mtr_ResourceMaster. Be sure to call
@@ -57,7 +57,7 @@
         and you can use your loaded data.
         Be sure to call mtr_clean_up if/when you
         want any mtr-allocated memory freed.
-		
+
     EXAMPLE
         enum {
             RS_FILE_1,
@@ -92,7 +92,7 @@
             }
         }
         mtr_clean_up(rs_master);
-		
+
     WARNING
         You're in charge of how the data loaded
         is interpreted. If you're not careful,
@@ -106,7 +106,7 @@
         this stuff, but that is not the point
         of this library; that would make it
         less general!
-		
+
     LICENSE INFORMATION IS AT THE END OF THE FILE
 */
 
@@ -234,6 +234,16 @@ inline void mtr_request_resource(mtr_ResourceMaster *r, uint16_t index) {
     pthread_mutex_lock(&r->mutex);
     r->need_load = 1;
     pthread_mutex_unlock(&r->mutex);
+}
+
+inline int8_t mtr_resource_data_ready(mtr_ResourceMaster *r, uint16_t index) {
+    pthread_mutex_lock(&r->mutex);
+    if(r->resources[index].data) {
+        pthread_mutex_unlock(&r->mutex);
+        return 1;
+    }
+    pthread_mutex_unlock(&r->mutex);
+    return 0;
 }
 
 inline int8_t mtr_grab_resource_data(mtr_ResourceMaster *r, uint16_t index, void **data, int64_t *data_len) {
