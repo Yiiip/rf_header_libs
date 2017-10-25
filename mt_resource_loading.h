@@ -110,8 +110,8 @@
     LICENSE INFORMATION IS AT THE END OF THE FILE
 */
 
-#ifndef _MTR_RESOURCE_MASTER_H
-#define _MTR_RESOURCE_MASTER_H
+#ifndef _MT_RESOURCE_LOADING_H
+#define _MT_RESOURCE_LOADING_H
 
 #include <stdlib.h>
 #include <stdio.h>
