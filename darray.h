@@ -40,6 +40,9 @@
         * da_erase    removes an element at a specified
                       position in the array
 
+        * da_clear    resets size to 0. does not free any
+                      memory.
+
         * da_free     frees all memory associated with
                       an array
 
@@ -117,6 +120,7 @@
 #define da_pop(a)                       if(da_size(a)) { _da_erase((void **)&a, sizeof(a[0]), da_size(a) - 1); }
 #define da_erase(a, i)                  if(da_size(a)) { _da_erase((void **)&a, sizeof(a[0]), i); }
 
+#define da_clear(a)                     { if(da_size(a)) { da_raw(a)[0] = 0; } }
 #define da_free(a)                      { if(a) { free(da_raw(a)); a = NULL; } }
 
 inline void _da_grow(void **array, size_t element_size, uint32_t required_elements) {
