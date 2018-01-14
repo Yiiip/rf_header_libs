@@ -148,6 +148,7 @@ inline void *_mtr_resource_load_thread(void *resources) {
 
             if(!data_loaded) {
                 FILE *file = fopen(r->resources[i].filename, "rb");
+
                 if(file) {
                     int64_t file_size;
                     char *buffer;
@@ -197,6 +198,9 @@ inline mtr_ResourceMaster *mtr_new(uint16_t resource_count, const char **filenam
 }
 
 inline void mtr_clean_up(mtr_ResourceMaster *r) {
+    pthread_join(r->load_thread, NULL);
+    pthread_mutex_destroy(&r->mutex);
+
     for(uint16_t i = 0; i < r->resource_count; i++) {
         free(r->resources[i].data);
     }
