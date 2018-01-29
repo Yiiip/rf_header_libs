@@ -4,7 +4,6 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     DESCRIPTION
-
         This library provides functionality that
         allows easy creation/usage of dynamically
         sizing arrays. It follows a similar pattern
@@ -12,40 +11,29 @@
         It stretches and reallocates memory as needed
         depending on how many objects it needs to
         store.
-
         Its only dependency is the CRT.
 
     USAGE
-
         There are a few notable functions for usual
         usage:
-
         * da_size     returns number of elements
-
         * da_cap      returns number of elements
                       allowed without reallocation.
                       if this is surpassed, the array
                       will require reallocation of
                       memory.
-
         * da_push     pushes an element to the back of
                       the array
-
         * da_insert   inserts an element to a position
                       in the array
-
         * da_pop      removes the last element of the
                       array
-
         * da_erase    removes an element at a specified
                       position in the array
-
         * da_clear    resets size to 0. does not free any
                       memory.
-
         * da_free     frees all memory associated with
                       an array
-
         To declare an array ready to use with these
         functions, simply create a pointer to a type of
         your choice and point it to NULL. Remember to
@@ -54,7 +42,6 @@
         allocated for the lifetime of the program.
 
     EXAMPLE
-
         int *int_array = NULL;
         for(int i = 0; i < 100; i++) {
             da_push(int_array, i);
@@ -63,37 +50,28 @@
         da_free(int_array);
 
     WARNING
-
         Memory might be reallocated. Therefore, don't
         expect a pointer to an element to remain
         constant. If you need pointers to elements
         to remain consistent, consider creating an
         array of pointers instead. Consider:
-
             int *int_array = NULL,
                 *first_element = NULL;
-
             for(int i = 0; i < 100; i++) {
                 da_push(int_array, i);
                 if(!i) first_element = int_array;
             }
-
             //first_element probably dangling
-
         vs.
-
             int **int_array = NULL,
                 *first_element = NULL;
-
             for(int i = 0; i < 100; i++) {
                 int *int_ptr = (int *)malloc(sizeof(int));
                 *int_ptr = i;
                 da_push(int_array, int_ptr);
                 if(!i) first_element = int_ptr;
             }
-
             //first_element is not dangling
-
         Also, do not try to insert something at a
         position greater than the length of the
         array.
@@ -101,8 +79,8 @@
     LICENSE INFORMATION IS AT THE END OF THE FILE
 */
 
-#ifndef _DARRAY_H
-#define _DARRAY_H
+#ifndef _RF_DARRAY_H
+#define _RF_DARRAY_H
 
 #include <stdlib.h>
 #include <stdint.h>
@@ -111,17 +89,17 @@
 
 #define _DARRAY_START_CAP 32
 
-#define da_raw(a)                       (a ? ((uint32_t *)a) - 2 : NULL)
-#define da_size(a)                      (a ? da_raw(a)[0] : 0)
-#define da_cap(a)                       (a ? da_raw(a)[1] : 0)
+#define da_raw(a)                       ((a) ? ((uint32_t *)(a)) - 2 : NULL)
+#define da_size(a)                      ((a) ? da_raw(a)[0] : 0)
+#define da_cap(a)                       ((a) ? da_raw(a)[1] : 0)
 
-#define da_push(a, e)                   _da_insert((void **)&a, &e, sizeof(e), da_size(a))
-#define da_insert(a, e, i)              _da_insert((void **)&a, &e, sizeof(e), i)
-#define da_pop(a)                       if(da_size(a)) { _da_erase((void **)&a, sizeof(a[0]), da_size(a) - 1); }
-#define da_erase(a, i)                  if(da_size(a)) { _da_erase((void **)&a, sizeof(a[0]), i); }
+#define da_push(a, e)                   _da_insert((void **)&(a), &e, sizeof(e), da_size(a))
+#define da_insert(a, e, i)              _da_insert((void **)&(a), &e, sizeof(e), i)
+#define da_pop(a)                       if(da_size(a)) { _da_erase((void **)&(a), sizeof((a)[0]), da_size(a) - 1); }
+#define da_erase(a, i)                  if(da_size(a)) { _da_erase((void **)&(a), sizeof((a)[0]), i); }
 
 #define da_clear(a)                     { if(da_size(a)) { da_raw(a)[0] = 0; } }
-#define da_free(a)                      { if(a) { free(da_raw(a)); a = NULL; } }
+#define da_free(a)                      { if(a) { free(da_raw(a)); (a) = NULL; } }
 
 inline void _da_grow(void **array, size_t element_size, uint32_t required_elements) {
     if(da_cap(*array) < required_elements) {
@@ -173,7 +151,9 @@ inline void _da_erase(void **array, size_t element_size, uint32_t pos) {
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 MIT License
+
 Copyright (c) 2017 Ryan Fleury
 
 Permission is hereby granted, free of charge, to any
@@ -197,5 +177,6 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
