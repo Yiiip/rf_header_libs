@@ -39,9 +39,9 @@
                          null terminator
 
         * rf_ds_new      creates a new string- flags can be
-						 passed and will be inserted into
-						 the string. this uses sprintf so
-					     flag functionality will match that.
+                         passed and will be inserted into
+                         the string. this uses sprintf so
+                         flag functionality will match that.
 
         * rf_ds_add_s    appends a string to a given string
          (aka ds_add_string)
@@ -104,14 +104,14 @@
 
         rf_dstring test = rf_ds_new("Hello");
         rf_ds_insert_s(test, "This will crash maybe", 1000);
-		
+        
         // the string we're trying to append states
         // information that is probably correct
 
-		
+        
         rf_dstring test = ds_new("Hello");
         rf_ds_insert_s(test, "This won't crash I bet", 5);
-		
+        
         // this is safe
 
     LICENSE INFORMATION IS AT THE END OF THE FILE
