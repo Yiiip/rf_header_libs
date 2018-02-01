@@ -25,25 +25,25 @@
         There are a few notable functions for usual
         usage:
         
-        * rf_hash_init        initializes an rf_HashTable object.
+        * rf_hash_init       initializes an rf_HashTable object.
                              takes the number of array slots
                              desired and a function pointer to
                              a custom hash function. if NULL
                              is passed for the hash function,
                              a default string one will be used.
         
-        * rf_hash_add          tries to add an element to the table.
+        * rf_hash_add        tries to add an element to the table.
                              takes the hash table, a key, and a
                              pointer to the element to be added.
                              returns 1 on success, 0 on failure.
                          
-        * rf_hash_delete      tries to delete an element given
+        * rf_hash_delete     tries to delete an element given
                              some key. returns 1 on success, 0
                              on failure. if successful, it will
                              delete the element that was last
                              added.
         
-        * rf_hash_clean_up     cleans up all allocated memory in
+        * rf_hash_clean_up   cleans up all allocated memory in
                              a hash table. if any cleaning-up
                              needs to be done for any particular
                              element, it is up to you to clean
@@ -65,7 +65,7 @@
         
         // ^ a will be 67890, b will be 12345.
         // note: this is a very expensive way to swap values-
-        //         it is just a demonstration ;)
+        //       it is just a demonstration ;)
         
         rf_hash_clean_up(h);
 
