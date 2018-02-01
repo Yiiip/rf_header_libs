@@ -12,6 +12,7 @@
         raw data, if found, at said filenames.
         This raw data can then be retrieved and used
         however you want.
+		
         Its only dependencies are the CRT/pthread.
 
     USAGE
@@ -20,26 +21,30 @@
 
         --------------------------------------------
 
-        * mtr_new
-              returns a newly allocated 'Resource
+        * rf_mtr_init
+              returns an initialized 'Resource
               Master'. Takes the number of resources
               you want and an array of C-strings
               (managed by you) that hold the
               filenames of these resources. Should
-              be called before any other mtr_
+              be called before any other rf_mtr_
               prefixed function.
-        * mtr_clean_up
-              cleans up an mtr_ResourceMaster. Frees
+			  
+        * rf_mtr_clean_up
+              cleans up an rf_ResourceMaster. Frees
               all associated memory and resources.
-        * mtr_update
+			  
+        * rf_mtr_update
               checks for new resource requests.
               This should happen frequently; if
               you're using this in a game, call this
               every frame.
-        * mtr_request_resource
+			  
+        * rf_mtr_request_resource
               requests the loading thread to start
               in order to load a given resource.
-        * mtr_grab_resource_data
+			  
+        * rf_mtr_grab_resource_data
               takes any loaded data associated with
               a resource and returns it (via passed
               pointers). Returns 1 if successful,
@@ -48,14 +53,14 @@
         --------------------------------------------
 
         In order to start using this, you should
-        create/initialize (via mtr_new) an
-        mtr_ResourceMaster. Be sure to call
-        mtr_update frequently, and call
-        mtr_request_resource as you please.
+        create/initialize (via rf_mtr_init) an
+        rf_ResourceMaster. Be sure to call
+        rf_mtr_update frequently, and call
+        rf_mtr_request as you please.
         When the resource is finished loading,
-        mtr_grab_resource_data will be successful
+        rf_grab_resource_data will be successful
         and you can use your loaded data.
-        Be sure to call mtr_clean_up if/when you
+        Be sure to call rf_mtr_clean_up if/when you
         want any mtr-allocated memory freed.
 
     EXAMPLE
@@ -66,23 +71,26 @@
             RS_FILE_4,
             MAX_RS
         };
-        const char *resource_filenames[MAX_RS] = {
+        
+		const char *resource_filenames[MAX_RS] = {
             "file1.txt",
             "file2.gif",
             "file3.mp4",
             "file4.mp3",
         };
-        mtr_ResourceMaster *rs_master = mtr_new(
+		
+        rf_ResourceMaster rs_master = rf_mtr_init(
             MAX_RS,
             resource_filenames
         );
-        mtr_request_resource(rs_master, RS_FILE_1);
-        while(true) {
-            mtr_update(rs_master);
+		
+        rf_request(&rs_master, RS_FILE_1);
+        while(1) {
+            rf_mtr_update(rs_master);
             printf("I'm updating while stuff is being loaded!\n");
             int64_t data_len = 0;
             void *data = NULL;
-            if(mtr_grab_resource_data(rs_master, RS_FILE_1, &data, &data_len)) {
+            if(rf_mtr_grab_resource_data(&rs_master, RS_FILE_1, &data, &data_len)) {
                 printf("The file is finished loading! Here are the contents!\n\n");
                 for(int64_t i = 0; i < data_len; i++) {
                     printf("%c", ((char *)data)[i]);
@@ -91,7 +99,7 @@
                 break;
             }
         }
-        mtr_clean_up(rs_master);
+        rf_mtr_clean_up(&rs_master);
 
     WARNING
         You're in charge of how the data loaded
@@ -110,22 +118,22 @@
     LICENSE INFORMATION IS AT THE END OF THE FILE
 */
 
-#ifndef _MT_RESOURCE_LOADING_H
-#define _MT_RESOURCE_LOADING_H
+#ifndef _RF_MT_RESOURCE_LOADING_H
+#define _RF_MT_RESOURCE_LOADING_H
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <pthread.h>
 
-typedef struct mtr_Resource {
+typedef struct rf_Resource {
     int8_t need_load;
     const char *filename;
     int64_t data_len;
     void *data;
-} mtr_Resource;
+} rf_Resource;
 
-typedef struct mtr_ResourceMaster {
+typedef struct rf_ResourceMaster {
     int8_t need_load,
            is_loading,
            need_finish;
@@ -134,11 +142,11 @@ typedef struct mtr_ResourceMaster {
     pthread_mutex_t   mutex;
 
     uint16_t resource_count;
-    mtr_Resource *resources;
-} mtr_ResourceMaster;
+    rf_Resource *resources;
+} rf_ResourceMaster;
 
-inline void *_mtr_resource_load_thread(void *resources) {
-    mtr_ResourceMaster *r = (mtr_ResourceMaster *)resources;
+inline void *_rf__mtr_resource_load_thread(void *resources) {
+    rf_ResourceMaster *r = (rf_ResourceMaster *)resources;
 
     for(uint16_t i = 0; i < r->resource_count; i++) {
         if(r->resources[i].need_load) {
@@ -179,25 +187,25 @@ inline void *_mtr_resource_load_thread(void *resources) {
     return NULL;
 }
 
-inline mtr_ResourceMaster *mtr_new(uint16_t resource_count, const char **filenames) {
-    mtr_ResourceMaster *r = (mtr_ResourceMaster *)malloc(sizeof(mtr_ResourceMaster));
+inline rf_ResourceMaster rf_mtr_init(uint16_t resource_count, const char **filenames) {
+    rf_ResourceMaster r;
 
-    r->need_load = 0;
-    r->is_loading = 0;
-    r->need_finish = 0;
+    r.need_load = 0;
+    r.is_loading = 0;
+    r.need_finish = 0;
 
-    r->mutex = PTHREAD_MUTEX_INITIALIZER;
+    r.mutex = PTHREAD_MUTEX_INITIALIZER;
 
-    r->resource_count = resource_count;
-    r->resources = (mtr_Resource *)calloc(resource_count, sizeof(mtr_Resource));
+    r.resource_count = resource_count;
+    r.resources = (rf_Resource *)calloc(resource_count, sizeof(rf_Resource));
     for(uint16_t i = 0; i < resource_count; ++i) {
-        r->resources[i].filename = filenames[i];
+        r.resources[i].filename = filenames[i];
     }
 
     return r;
 }
 
-inline void mtr_clean_up(mtr_ResourceMaster *r) {
+inline void rf_mtr_clean_up(rf_ResourceMaster *r) {
     pthread_join(r->load_thread, NULL);
     pthread_mutex_destroy(&r->mutex);
 
@@ -205,10 +213,9 @@ inline void mtr_clean_up(mtr_ResourceMaster *r) {
         free(r->resources[i].data);
     }
     free(r->resources);
-    free(r);
 }
 
-inline void mtr_update(mtr_ResourceMaster *r) {
+inline void rf_mtr_update(rf_ResourceMaster *r) {
     if(r->is_loading) {
         int8_t finished = 0;
         if(!pthread_mutex_trylock(&r->mutex)) {
@@ -227,12 +234,12 @@ inline void mtr_update(mtr_ResourceMaster *r) {
         if(r->need_load) {
             pthread_join(r->load_thread, NULL);
             r->is_loading = 1;
-            pthread_create(&r->load_thread, NULL, _mtr_resource_load_thread, (void *)r);
+            pthread_create(&r->load_thread, NULL, _rf__mtr_resource_load_thread, (void *)r);
         }
     }
 }
 
-inline void mtr_request_resource(mtr_ResourceMaster *r, uint16_t index) {
+inline void rf_mtr_request(rf_ResourceMaster *r, uint16_t index) {
     r->resources[index].need_load = 1;
 
     pthread_mutex_lock(&r->mutex);
@@ -240,7 +247,7 @@ inline void mtr_request_resource(mtr_ResourceMaster *r, uint16_t index) {
     pthread_mutex_unlock(&r->mutex);
 }
 
-inline int8_t mtr_resource_data_ready(mtr_ResourceMaster *r, uint16_t index) {
+inline int8_t rf_mtr_resource_ready(rf_ResourceMaster *r, uint16_t index) {
     pthread_mutex_lock(&r->mutex);
     if(r->resources[index].data) {
         pthread_mutex_unlock(&r->mutex);
@@ -250,7 +257,7 @@ inline int8_t mtr_resource_data_ready(mtr_ResourceMaster *r, uint16_t index) {
     return 0;
 }
 
-inline int8_t mtr_grab_resource_data(mtr_ResourceMaster *r, uint16_t index, void **data, int64_t *data_len) {
+inline int8_t rf_mtr_grab_resource_data(rf_ResourceMaster *r, uint16_t index, void **data, int64_t *data_len) {
     pthread_mutex_lock(&r->mutex);
     if(r->resources[index].data) {
         *data = r->resources[index].data;
@@ -268,6 +275,7 @@ inline int8_t mtr_grab_resource_data(mtr_ResourceMaster *r, uint16_t index, void
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 MIT License
 
 Copyright (c) 2017 Ryan Fleury
