@@ -12,7 +12,7 @@
         raw data, if found, at said filenames.
         This raw data can then be retrieved and used
         however you want.
-		
+        
         Its only dependencies are the CRT/pthread.
 
     USAGE
@@ -29,21 +29,21 @@
               filenames of these resources. Should
               be called before any other rf_mtr_
               prefixed function.
-			  
+              
         * rf_mtr_clean_up
               cleans up an rf_ResourceMaster. Frees
               all associated memory and resources.
-			  
+              
         * rf_mtr_update
               checks for new resource requests.
               This should happen frequently; if
               you're using this in a game, call this
               every frame.
-			  
+              
         * rf_mtr_request_resource
               requests the loading thread to start
               in order to load a given resource.
-			  
+              
         * rf_mtr_grab_resource_data
               takes any loaded data associated with
               a resource and returns it (via passed
@@ -72,18 +72,18 @@
             MAX_RS
         };
         
-		const char *resource_filenames[MAX_RS] = {
+        const char *resource_filenames[MAX_RS] = {
             "file1.txt",
             "file2.gif",
             "file3.mp4",
             "file4.mp3",
         };
-		
+        
         rf_ResourceMaster rs_master = rf_mtr_init(
             MAX_RS,
             resource_filenames
         );
-		
+        
         rf_request(&rs_master, RS_FILE_1);
         while(1) {
             rf_mtr_update(rs_master);
@@ -118,8 +118,8 @@
     LICENSE INFORMATION IS AT THE END OF THE FILE
 */
 
-#ifndef _RF_MT_RESOURCE_LOADING_H
-#define _RF_MT_RESOURCE_LOADING_H
+#ifndef _RF_MTR_H
+#define _RF_MTR_H
 
 #include <stdlib.h>
 #include <stdio.h>
