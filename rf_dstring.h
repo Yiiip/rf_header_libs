@@ -27,53 +27,53 @@
         There are a few notable functions for usual
         usage:
 
-        * ds_size     returns number of chars including
-                      null terminator
+        * rf_ds_size     returns number of chars including
+                         null terminator
 
-        * ds_cap      returns number of chars allowed
-                      with current allocation. if this
-                      is exceeded, reallocation will
-                      be necessary.
+        * rf_ds_cap      returns number of chars allowed
+                         with current allocation. if this
+                         is exceeded, reallocation will
+                         be necessary.
 
-        * ds_length   returns number of chars without
-                      null terminator
+        * rf_ds_length   returns number of chars without
+                         null terminator
 
-        * ds_new      creates a new string- flags can be
-                      passed and will be inserted into
-                      the string. this uses sprintf so
-                      flag functionality will match that.
+        * rf_ds_new      creates a new string- flags can be
+						 passed and will be inserted into
+						 the string. this uses sprintf so
+					     flag functionality will match that.
 
-        * ds_add_s    appends a string to a given string
+        * rf_ds_add_s    appends a string to a given string
          (aka ds_add_string)
 
-        * ds_add_c    appends a char to a given string
+        * rf_ds_add_c    appends a char to a given string
          (aka ds_add_char)
 
-        * ds_add_i    appends an int to a given string
+        * rf_ds_add_i    appends an int to a given string
          (aka ds_add_int)
 
-        * ds_add_f    appends a floating point value to
-                      a given string
+        * rf_ds_add_f    appends a floating point value to
+                         a given string
          (aka ds_add_float)
 
-        * ds_insert_s inserts a string to a given string
-                      at a given position
+        * drf_s_insert_s inserts a string to a given string
+                         at a given position
          (aka ds_insert_string)
 
-        * ds_insert_c inserts a char to a given string
-                      at a given position
+        * rf_ds_insert_c inserts a char to a given string
+                         at a given position
          (aka ds_insert_char)
 
-        * ds_insert_i inserts an int to a given string
-                      at a given position
+        * rf_ds_insert_i inserts an int to a given string
+                         at a given position
          (aka ds_insert_int)
 
-        * ds_insert_f inserts a floating point value to
-                      a given string at a given position
+        * rf_ds_insert_f inserts a floating point value to
+                         a given string at a given position
          (aka ds_insert_float)
 
-        * ds_free     frees all memory associated with
-                      a string.
+        * rf_ds_free     frees all memory associated with
+                         a string.
 
         To declare a string ready to use with these
         functions, simply create a char * and point it
@@ -85,12 +85,12 @@
 
     EXAMPLE
 
-        dstring str = NULL;
-        str = ds_new("This is a number: %i", 123);
-        ds_add_string(str, "\nHere's another number: ");
-        ds_add_int(str, 321);
-        ds_insert_float(str, 123.45, 12);
-        ds_free(str);
+        rf_dstring str = NULL;
+        str = rf_ds_new("This is a number: %i", 123);
+        rf_ds_add_string(str, "\nHere's another number: ");
+        rf_ds_add_int(str, 321);
+        rf_ds_insert_float(str, 123.45, 12);
+        rf_ds_free(str);
 
     WARNING
 
@@ -102,14 +102,17 @@
         position greater than the length of the
         string. Consider:
 
-        dstring test = ds_new("Hello");
-        ds_insert_s(test, "This will crash maybe", 1000);
-        //the string we're trying to append states
-        //information that is probably correct
+        rf_dstring test = rf_ds_new("Hello");
+        rf_ds_insert_s(test, "This will crash maybe", 1000);
+		
+        // the string we're trying to append states
+        // information that is probably correct
 
-        dstring test = ds_new("Hello");
-        ds_insert_s(test, "This won't crash I bet", 5);
-        //this is safe
+		
+        rf_dstring test = ds_new("Hello");
+        rf_ds_insert_s(test, "This won't crash I bet", 5);
+		
+        // this is safe
 
     LICENSE INFORMATION IS AT THE END OF THE FILE
 */
