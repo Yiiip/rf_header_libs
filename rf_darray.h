@@ -11,40 +11,40 @@
         It stretches and reallocates memory as needed
         depending on how many objects it needs to
         store.
-		
+        
         Its only dependency is the CRT.
 
     USAGE
         There are a few notable functions for usual
         usage:
-		
+        
         * rf_da_size     returns number of elements
-		
+        
         * rf_da_cap      returns number of elements
-						 allowed without reallocation.
-						 if this is surpassed, the array
-						 will require reallocation of
-						 memory.
-        
-		* rf_da_push     pushes an element to the back of
-                         the array
-        
-		* rf_da_insert   inserts an element to a position
-                         in the array
-        
-		* rf_da_pop      removes the last element of the
-                         array
-        
-		* rf_da_erase    removes an element at a specified
-                         position in the array
-        
-		* rf_da_clear    resets size to 0. does not free any
+                         allowed without reallocation.
+                         if this is surpassed, the array
+                         will require reallocation of
                          memory.
         
-		* rf_da_free     frees all memory associated with
+        * rf_da_push     pushes an element to the back of
+                         the array
+        
+        * rf_da_insert   inserts an element to a position
+                         in the array
+        
+        * rf_da_pop      removes the last element of the
+                         array
+        
+        * rf_da_erase    removes an element at a specified
+                         position in the array
+        
+        * rf_da_clear    resets size to 0. does not free any
+                         memory.
+        
+        * rf_da_free     frees all memory associated with
                          an array
         
-		To declare an array ready to use with these
+        To declare an array ready to use with these
         functions, simply create a pointer to a type of
         your choice and point it to NULL. Remember to
         call da_free before the pointer goes out of
@@ -65,7 +65,7 @@
         constant. If you need pointers to elements
         to remain consistent, consider creating an
         array of pointers instead. Consider:
-		
+        
             int *int_array = NULL,
                 *first_element = NULL;
             for(int i = 0; i < 100; i++) {
@@ -73,9 +73,9 @@
                 if(!i) first_element = int_array;
             }
             //first_element probably dangling
-			
+            
         vs.
-		
+        
             int **int_array = NULL,
                 *first_element = NULL;
             for(int i = 0; i < 100; i++) {
@@ -85,7 +85,7 @@
                 if(!i) first_element = int_ptr;
             }
             //first_element is not dangling
-			
+            
         Also, do not try to insert something at a
         position greater than the length of the
         array.
@@ -194,4 +194,3 @@ SOFTWARE.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-
