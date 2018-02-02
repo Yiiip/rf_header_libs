@@ -1,9 +1,10 @@
 /*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-          SINGLE-HEADER C/++ HASH TABLE LIBRARY
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                SINGLE-HEADER C/++ HASH TABLE LIBRARY
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     DESCRIPTION
+	
         This library provides functionality that
         allows easy creation/usage of hash tables.
         It works with any type (but you should take
@@ -22,6 +23,7 @@
         Its only dependency is the CRT.
 
     USAGE
+	
         There are a few notable functions for usual
         usage:
         
@@ -50,6 +52,7 @@
                              that up first.
 
     EXAMPLE
+	
         // default hashing function --------v 
         rf_HashTable h = rf_hash_init(1000, 0);
         
@@ -70,6 +73,7 @@
         rf_hash_clean_up(h);
 
     WARNING
+	
         It is best practice to NOT mix and match types
         with a single hash table. Just don't do it!
         The only way it'll remain 100% safe is if all
@@ -216,7 +220,7 @@ inline int8_t _rf__hash_get(rf_HashTable *h, const void *key, void *element, uin
 #endif
 
 /*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 MIT License
 
@@ -244,5 +248,5 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
