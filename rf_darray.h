@@ -13,7 +13,8 @@
         depending on how many objects it needs to
         store.
         
-        Its only dependency is the CRT.
+        It uses the CRT by default, but you can change
+        this (see below).
 
     USAGE
     
