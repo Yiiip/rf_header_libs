@@ -1,9 +1,10 @@
 /*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   SINGLE-HEADER C/++ MULTI-THREADED RESOURCE LIBRARY
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         SINGLE-HEADER C/++ MULTI-THREADED RESOURCE LIBRARY
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     DESCRIPTION
+	
         This library provides the bare-bones basics
         for multi-threaded resource management. Using
         indices and filenames corresponding with those
@@ -16,6 +17,7 @@
         Its only dependencies are the CRT/pthread.
 
     USAGE
+	
         There are a few notable functions for usual
         usage:
 
@@ -64,6 +66,7 @@
         want any mtr-allocated memory freed.
 
     EXAMPLE
+	
         enum {
             RS_FILE_1,
             RS_FILE_2,
@@ -102,6 +105,7 @@
         rf_mtr_clean_up(&rs_master);
 
     WARNING
+	
         You're in charge of how the data loaded
         is interpreted. If you're not careful,
         you'll have some nasty crashes. This
@@ -274,7 +278,7 @@ inline int8_t rf_mtr_grab_resource_data(rf_ResourceMaster *r, uint16_t index, vo
 #endif
 
 /*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 MIT License
 
@@ -302,5 +306,5 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
