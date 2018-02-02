@@ -167,17 +167,17 @@
 
 #ifndef RF_DARRAY_REALLOC
 #include <stdlib.h>
-#define RF_REALLOC realloc
+#define RF_DARRAY_REALLOC realloc
 #endif
 
 #ifndef RF_DARRAY_SIZE_T
 #include <stdint.h>
-#define RF_SIZE_T uint32_t
+#define RF_DARRAY_SIZE_T uint32_t
 #endif
 
 #ifndef RF_DARRAY_MEMMOVE
 #include <string.h>
-#define RF_MEMMOVE memmove
+#define RF_DARRAY_MEMMOVE memmove
 #endif
 
 #ifndef RF_DARRAY_MEMCPY
