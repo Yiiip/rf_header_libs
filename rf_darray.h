@@ -65,7 +65,7 @@
         
         1. Overriding CRT realloc usage
         
-           #define RF_REALLOC to be the identifier of a
+           #define RF_DARRAY_REALLOC to be the identifier of a
            function of your choosing. For safe usage, your
            function must have the form:
            
@@ -82,7 +82,7 @@
         
         2. Overriding CRT memmove usage
         
-           #define RF_MEMMOVE to be the identifier of a function
+           #define RF_DARRAY_MEMMOVE to be the identifier of a function
            of your choosing. For safe usage, your function must
            have the form:
            
@@ -96,7 +96,7 @@
         
         3. Overriding CRT memcpy usage
         
-           #define RF_MEMCPY to be the indentifier of a function
+           #define RF_DARRAY_MEMCPY to be the indentifier of a function
            of your choosing. For safe usage, your function must have
            the form:
            
@@ -112,7 +112,7 @@
         4. Using something other than uint32_t for size/cap
            storage
         
-           #define RF_SIZE_T to be a size type of your choice;
+           #define RF_DARRAY_SIZE_T to be a size type of your choice;
            this will be used as the type to store the 
            size/capacity of arrays.
         
@@ -165,23 +165,23 @@
 #ifndef _RF_DARRAY_H
 #define _RF_DARRAY_H
 
-#ifndef RF_REALLOC
+#ifndef RF_DARRAY_REALLOC
 #include <stdlib.h>
 #define RF_REALLOC realloc
 #endif
 
-#ifndef RF_SIZE_T
+#ifndef RF_DARRAY_SIZE_T
 #include <stdint.h>
 #define RF_SIZE_T uint32_t
 #endif
 
-#ifndef RF_MEMMOVE
+#ifndef RF_DARRAY_MEMMOVE
 #include <string.h>
 #define RF_MEMMOVE memmove
 #endif
 
-#ifndef RF_MEMCPY
-#define RF_MEMCPY  memcpy
+#ifndef RF_DARRAY_MEMCPY
+#define RF_DARRAY_MEMCPY memcpy
 #endif
 
 #define _RF_DARRAY_START_CAP 32
@@ -208,7 +208,7 @@ inline void _rf__da_grow(void **array, size_t element_size, uint32_t required_el
     new_cap |= new_cap >> 16;
     ++new_cap;
     
-    *array = (void *)((uint32_t *)RF_REALLOC(_rf__da_raw(*array), new_cap*element_size + 2*sizeof(uint32_t)) + 2);
+    *array = (void *)((uint32_t *)RF_DARRAY_REALLOC(_rf__da_raw(*array), new_cap*element_size + 2*sizeof(uint32_t)) + 2);
     *(_rf__da_raw(*array) + 1) = new_cap;
 }
 
@@ -224,27 +224,27 @@ inline void _rf__da_insert(void **array, void *element, size_t element_size, uin
     }
 
     if(rf_da_size(*array) - pos > 0) {
-        RF_MEMMOVE(((uint8_t *)(*array)) + (element_size * (pos + 1)),
-                   ((uint8_t *)(*array)) + (element_size * pos),
-                   element_size * (rf_da_size(*array) - pos));
+        RF_DARRAY_MEMMOVE(((uint8_t *)(*array)) + (element_size * (pos + 1)),
+                          ((uint8_t *)(*array)) + (element_size * pos),
+                          element_size * (rf_da_size(*array) - pos));
     }
 
-    RF_MEMCPY(((uint8_t *)(*array)) + (element_size * pos),
-              element, element_size);
+    RF_DARRAY_MEMCPY(((uint8_t *)(*array)) + (element_size * pos),
+                     element, element_size);
 
     ++_rf__da_raw(*array)[0];
 }
 
 inline void _rf__da_concat(void **dest, void **src, size_t element_size) {
     _rf__da_grow(dest, element_size, rf_da_size(*dest) + rf_da_size(*src));
-    RF_MEMCPY((uint8_t *)(*dest) + element_size*rf_da_size(*dest), *src, element_size*rf_da_size(*src));
+    RF_DARRAY_MEMCPY((uint8_t *)(*dest) + element_size*rf_da_size(*dest), *src, element_size*rf_da_size(*src));
     _rf__da_raw(*dest)[0] += rf_da_size(*src);
 }
 
 inline void _rf__da_erase(void **array, size_t element_size, uint32_t pos) {
-    RF_MEMMOVE(((uint8_t *)(*array)) + (element_size * pos),
-               ((uint8_t *)(*array)) + (element_size * (pos + 1)),
-               element_size * (rf_da_size(*array) - pos - 1));
+    RF_DARRAY_MEMMOVE(((uint8_t *)(*array)) + (element_size * pos),
+                      ((uint8_t *)(*array)) + (element_size * (pos + 1)),
+                      element_size * (rf_da_size(*array) - pos - 1));
 
     --_rf__da_raw(*array)[0];
 }
