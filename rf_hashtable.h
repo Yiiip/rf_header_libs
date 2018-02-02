@@ -105,6 +105,8 @@
 
 typedef uint64_t (* rf_HashFunc)(const void *key);
 
+typedef struct rf_HashNode rf_HashNode;
+
 typedef struct rf_HashNode {
     void *data;
     rf_HashNode *next;
