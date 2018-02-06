@@ -6,18 +6,24 @@
     DESCRIPTION
     
         This library provides functionality that
-        allows easy creation/usage of dynamically
-        sizing arrays. It follows a similar pattern
-        to Sean Barrett's stretchy buffer library.
+        allows easy creation/usage of heap-allocated 
+        dynamically sizing arrays. It follows a similar 
+        pattern to Sean Barrett's stretchy buffer library.
         It stretches and reallocates memory as needed
-        depending on how many objects it needs to
+        depending on how many elements it needs to
         store.
         
         It uses the CRT by default, but you can change
-        this (see below).
+        this (see CUSTOMIZATION section).
 
     USAGE
-    
+
+        You MUST #define RF_DARRAY_IMPLEMENTATION before
+        including this file in ONE .cpp or .c file to
+        allow usage. There are also other #define's that you
+        can write before including this file to customize 
+        usage of the library (see CUSTOMIZATION section).
+        
         There are a few notable functions for usual
         usage:
         
@@ -118,6 +124,15 @@
         
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+        5. Using short names
+        
+           #define RF_DARRAY_SHORT_NAMES before including the file to
+           allow use of darray functions without the rf_ prefix; that
+           is, da_push instead of rf_da_push, da_size instead of
+           rf_da_size, etc.
+           
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        
     EXAMPLE
     
         int *int_array = NULL;
@@ -162,8 +177,8 @@
     LICENSE INFORMATION IS AT THE END OF THE FILE
 */
 
-#ifndef _RF_DARRAY_H
-#define _RF_DARRAY_H
+#ifndef _RF_DARRAY_INCLUDED
+#define _RF_DARRAY_INCLUDED
 
 #ifndef RF_DARRAY_REALLOC
 #include <stdlib.h>
@@ -194,12 +209,33 @@
 #define rf_da_insert(a, e, i)              _rf__da_insert((void **)&(a), &e, sizeof(e), i)
 #define rf_da_pop(a)                       if(rf_da_size(a)) { _rf__da_erase((void **)&(a), sizeof((a)[0]), rf_da_size(a) - 1); }
 #define rf_da_erase(a, i)                  if(rf_da_size(a)) { _rf__da_erase((void **)&(a), sizeof((a)[0]), i); }
-#define rf_da_concat(a, b)                   if(rf_da_size(b)) { _rf__da_concat((void **)&(a), (void **)&(b), sizeof(b[0])); }
+#define rf_da_concat(a, b)                 if(rf_da_size(b)) { _rf__da_concat((void **)&(a), (void **)&(b), sizeof(b[0])); }
 
 #define rf_da_clear(a)                     { if(rf_da_size(a)) { _rf__da_raw(a)[0] = 0; } }
 #define rf_da_free(a)                      { if(a) { free(_rf__da_raw(a)); (a) = NULL; } }
 
-inline void _rf__da_grow(void **array, size_t element_size, uint32_t required_elements) {
+#ifdef RF_DARRAY_SHORT_NAMES
+
+#define da_size     rf_da_size
+#define da_cap      rf_da_cap
+#define da_push     rf_da_push
+#define da_insert   rf_da_insert
+#define da_pop      rf_da_pop
+#define da_erase    rf_da_erase
+#define da_concat   rf_da_concat
+#define da_clear    rf_da_clear
+#define da_free     rf_da_free
+
+#endif
+
+void _rf__da_grow(void **array, size_t element_size, uint32_t required_elements);
+void _rf__da_insert(void **array, void *element, size_t element_size, uint32_t pos);
+void _rf__da_concat(void **dest, void **src, size_t element_size);
+void _rf__da_erase(void **array, size_t element_size, uint32_t pos);
+
+#ifdef RF_DARRAY_IMPLEMENTATION
+
+void _rf__da_grow(void **array, size_t element_size, uint32_t required_elements) {
     uint32_t new_cap = (required_elements > _RF_DARRAY_START_CAP ? required_elements : _RF_DARRAY_START_CAP)-1;
     new_cap |= new_cap >> 1;
     new_cap |= new_cap >> 2;
@@ -212,7 +248,7 @@ inline void _rf__da_grow(void **array, size_t element_size, uint32_t required_el
     *(_rf__da_raw(*array) + 1) = new_cap;
 }
 
-inline void _rf__da_insert(void **array, void *element, size_t element_size, uint32_t pos) {
+void _rf__da_insert(void **array, void *element, size_t element_size, uint32_t pos) {
     int8_t array_null = !*array;
     
     if(rf_da_cap(*array) < rf_da_size(*array) + 1) {
@@ -235,13 +271,13 @@ inline void _rf__da_insert(void **array, void *element, size_t element_size, uin
     ++_rf__da_raw(*array)[0];
 }
 
-inline void _rf__da_concat(void **dest, void **src, size_t element_size) {
+void _rf__da_concat(void **dest, void **src, size_t element_size) {
     _rf__da_grow(dest, element_size, rf_da_size(*dest) + rf_da_size(*src));
     RF_DARRAY_MEMCPY((uint8_t *)(*dest) + element_size*rf_da_size(*dest), *src, element_size*rf_da_size(*src));
     _rf__da_raw(*dest)[0] += rf_da_size(*src);
 }
 
-inline void _rf__da_erase(void **array, size_t element_size, uint32_t pos) {
+void _rf__da_erase(void **array, size_t element_size, uint32_t pos) {
     RF_DARRAY_MEMMOVE(((uint8_t *)(*array)) + (element_size * pos),
                       ((uint8_t *)(*array)) + (element_size * (pos + 1)),
                       element_size * (rf_da_size(*array) - pos - 1));
@@ -249,7 +285,9 @@ inline void _rf__da_erase(void **array, size_t element_size, uint32_t pos) {
     --_rf__da_raw(*array)[0];
 }
 
-#endif
+#endif /* RF_DARRAY_IMPLEMENTATION */
+
+#endif /* _RF_DARRAY_INCLUDED */
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
