@@ -35,6 +35,34 @@
             r64 for double
             bl  for int8_t (used for booleans)
       
+      * malloc/alloca helpers
+            I found it particularly annoying to type:
+                
+                int *arr = (int *)malloc(100*sizeof(int));
+                
+            time after time. Typing the type that you want to
+            allocate three times is a bit cumbersome, so this
+            file contains some macros that are helpful here.
+            They're also more readable.
+            
+            These macros are heap_alloc and stack_alloc. They
+            both only accept two parameters, the type that is
+            being allocated, and the number of objects of that
+            type to allocate.
+            
+            Here's an example:
+            
+                int *heap_arr = heap_alloc(int, 100000);
+                int *stack_arr = stack_alloc(int, 100);
+                
+                free(heap_arr);
+                // don't free stack_arr, it's on the stack
+      
+      * byte/kilobyte/megabyte/etc. conversion helpers
+            A few macros are provided for converting from
+            kilobytes/megabytes/etc. into bytes. For example,
+            kilobytes(1) will return 1024 bytes, and so on.
+      
       * foreach loops
             foreach loops are a quicker method of looping from 
             0 to some upper-bound. They're usually useful for
@@ -88,7 +116,34 @@
             different lengths. For example, forrng8 loops with
             a signed byte, forrng16 loops with a signed 16-bit
             integer, etc.
-
+            
+      * min/max macros
+            This file contains two macros, min and max, that
+            are just shorthands for using the ternary operator
+            to determine the min/max of two values. They take
+            two arguments (the two values to find the min/max of).
+            
+            Here's an example:
+            
+                int a = 5;
+                int b = 2;
+                
+                printf("%i\n", max(a, b)); // will print 5 (a)
+                printf("%i\n", min(a, b)); // will print 2 (b)
+                
+      * even/odd checking
+            A shorthand for checking even-ness/oddness of a number
+            is provided. It just &'s with 1 (to determine if
+            the number's last bit is 1, indicating whether it's
+            odd or even). It takes one parameter (the number to
+            check the evenness/oddness of).
+                
+      * helpful definitions for angle math
+            A definition for PI is included, as well as deg2rad
+            and rad2deg macros. These are fairly straightfoward:
+            deg2rad just takes a value interpreted as degrees and
+            converts it to radians. rad2deg does the opposite.
+            
     LICENSE INFORMATION IS AT THE END OF THE FILE
 */
 
@@ -97,17 +152,34 @@
 
 #include <stdint.h>
 
-#define foreach8(i, lim)    for(u8 i = 0; i < lim; ++i)
-#define foreach16(i, lim)   for(u16 i = 0; i < lim; ++i)
-#define foreach32(i, lim)   for(u32 i = 0; i < lim; ++i)
-#define foreach64(i, lim)   for(u64 i = 0; i < lim; ++i)
-#define foreach(i, lim)     for(u64 i = 0; i < lim; ++i)
+#define heap_alloc(t, n)    ((t *)malloc(n*sizeof(t)))
+#define stack_alloc(t, n)   ((t *)alloca(n*sizeof(t)))
 
-#define forrng8(i, l, h)    for(i8 i = l; i < h; ++i)
-#define forrng16(i, l, h)   for(i16 i = l; i < h; ++i)
-#define forrng32(i, l, h)   for(i32 i = l; i < h; ++i)
-#define forrng64(i, l, h)   for(i64 i = l; i < h; ++i)
-#define forrng(i, l, h)     for(i64 i = l; i < h; ++i)
+#define bytes(n)            (n)
+#define kilobytes(n)        (n*1024)
+#define megabytes(n)        (kilobytes(n)*1024)
+#define gigabytes(n)        (megabytes(n)*1024)
+
+#define foreach8(i, lim)    for(u8 i = 0; i < (lim); ++i)
+#define foreach16(i, lim)   for(u16 i = 0; i < (lim); ++i)
+#define foreach32(i, lim)   for(u32 i = 0; i < (lim); ++i)
+#define foreach64(i, lim)   for(u64 i = 0; i < (lim); ++i)
+#define foreach(i, lim)     for(u64 i = 0; i < (lim); ++i)
+
+#define forrng8(i, l, h)    for(i8 i = (l); (i) < (h); ++i)
+#define forrng16(i, l, h)   for(i16 i = (l); (i) < (h); ++i)
+#define forrng32(i, l, h)   for(i32 i = (l); (i) < (h); ++i)
+#define forrng64(i, l, h)   for(i64 i = (l); (i) < (h); ++i)
+#define forrng(i, l, h)     for(i64 i = (l); (i) < (h); ++i)
+
+#define max(a, b)           ((a) > (b) ? (a) : (b))
+#define min(a, b)           ((a) < (b) ? (a) : (b))
+
+#define is_even(a)          (!((a) & 0x01))
+
+#define PI                  (3.1415926535897)
+#define deg2rad(a)          (a*(PI/180.0))
+#define rad2deg(a)          (a*(180.0/PI))
 
 typedef int8_t   i8;
 typedef int16_t  i16;
