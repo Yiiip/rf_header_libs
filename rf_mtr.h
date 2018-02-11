@@ -210,7 +210,9 @@ inline rf_ResourceMaster rf_mtr_init(uint16_t resource_count, const char **filen
 }
 
 inline void rf_mtr_clean_up(rf_ResourceMaster *r) {
-    pthread_join(r->load_thread, NULL);
+    if(r->is_loading) {
+        pthread_join(r->load_thread, NULL);
+    }
     pthread_mutex_destroy(&r->mutex);
 
     for(uint16_t i = 0; i < r->resource_count; i++) {
@@ -236,7 +238,9 @@ inline void rf_mtr_update(rf_ResourceMaster *r) {
     }
     else {
         if(r->need_load) {
-            pthread_join(r->load_thread, NULL);
+            if(r->is_loading) {
+                pthread_join(r->load_thread, NULL);
+            }
             r->is_loading = 1;
             pthread_create(&r->load_thread, NULL, _rf__mtr_resource_load_thread, (void *)r);
         }
