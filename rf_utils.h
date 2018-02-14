@@ -177,9 +177,13 @@
 
 #define is_even(a)          (!((a) & 0x01))
 
+#define swap(a, b)          if(&(a) != &(b)) { (a) ^= (b); (b) ^= (a); (a) ^= (b); }
+
 #define PI                  (3.1415926535897)
 #define deg2rad(a)          (a*(PI/180.0))
 #define rad2deg(a)          (a*(180.0/PI))
+
+#define global              static
 
 typedef int8_t   i8;
 typedef int16_t  i16;
